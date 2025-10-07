@@ -1,0 +1,53 @@
+# Root-level .gitignore for Fullstack_NoSql mono-repo
+
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Next.js / build outputs
+**/.next/
+**/out/
+**/dist/
+**/build/
+**/coverage/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Typescript
+*.tsbuildinfo
+
+# Temporary
+*.tmp
+*.temp
+
+# Vercel
+.vercel/
+
+# Misc
+*.pem
+
+# Allow subfolder .gitignore to still be useful but avoid duplicate ignores
+# (subfolder .gitignore files can remain; root patterns above will cover common cases)
