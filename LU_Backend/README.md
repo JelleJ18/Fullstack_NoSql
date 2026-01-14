@@ -25,6 +25,34 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## MongoDB (Mongoose) setup
+
+This project is configured to connect to MongoDB using Mongoose. Configure your connection string via the `MONGODB_URI` environment variable.
+
+1. Copy `.env.example` to `.env` and set `MONGODB_URI`:
+
+```bash
+MONGODB_URI=mongodb://127.0.0.1:27017/lu_db
+```
+
+2. Install dependencies and run the app:
+
+```bash
+npm install
+npm run start:dev
+```
+
+3. Check DB connection status:
+
+```bash
+# Should return { state: "connected", ... } when Mongo is reachable
+curl http://localhost:3001/api/db-status
+```
+
+Notes:
+- Default port is `3001`. You can override via `PORT` env.
+- For MongoDB Atlas, use the SRV URI form. See `.env.example` for a template.
+
 ## Project setup
 
 ```bash
@@ -43,6 +71,8 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+You can also set `PORT` to change the listen port (defaults to `3001`).
 
 ## Run tests
 

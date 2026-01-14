@@ -1,5 +1,6 @@
 'use client'; // Zorg dat dit een client component is, zodat je fetch in de browser draait
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Page() {
@@ -8,7 +9,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/hello')
+    fetch('/api/hello')
       .then((res) => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.text(); // backend retourneert een plain string
@@ -24,6 +25,7 @@ export default function Page() {
   return (
     <div>
       <h1>React Frontend (Next.js)</h1>
+      <Link href="/register">Account aanmaken</Link>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
