@@ -2,12 +2,13 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { RootController } from './root.controller';
-import { MongoLoggerProvider } from './mongo-logger.provider';
-import { AuthController } from './auth.controller';
-import { UsersModule } from './users/users.module';
+import { AppController } from '../controllers/app.controller';
+import { AppService } from '../services/app.service';
+import { RootController } from '../root.controller';
+import { MongoLoggerProvider } from '../mongo-logger.provider';
+import { AuthController } from '../controllers/auth.controller';
+import { UsersModule } from './users.module';
+import { ModulesModule } from './modules.module';
 
 // Altijd verbinden: gebruik env of val terug op lokale default
 const mongoModule = MongooseModule.forRootAsync({
@@ -19,13 +20,12 @@ const mongoModule = MongooseModule.forRootAsync({
     console.log('[MongoDB] connecting to:', uri);
     // store for status debugging
     process.env.EFFECTIVE_MONGODB_URI = uri;
-    return {
+    
+    // directConnection and family only work with local MongoDB, not MongoDB Atlas SRV URIs
+    const isSrvUri = uri.includes('mongodb+srv://');
+    const mongoOptions: any = {
       uri,
       serverSelectionTimeoutMS: 10000,
-      // deze twee hints lossen vaak localhost/IPv6 issues op
-      directConnection: true as any,
-      family: 4 as any,
-      // Retry & logging to diagnose connection issues
       retryAttempts: 5,
       retryDelay: 2000,
       verboseRetryLog: true,
@@ -35,7 +35,15 @@ const mongoModule = MongooseModule.forRootAsync({
         process.env.MONGOOSE_LAST_ERROR_MSG = String(error?.message ?? error);
         return error;
       },
-    } as any;
+    };
+    
+    // these options are only for local MongoDB to avoid IPv6 issues
+    if (!isSrvUri) {
+      mongoOptions.directConnection = true;
+      mongoOptions.family = 4;
+    }
+    
+    return mongoOptions;
   },
 });
 
@@ -44,6 +52,7 @@ const mongoModule = MongooseModule.forRootAsync({
     ConfigModule.forRoot({ isGlobal: true }),
     mongoModule,
     UsersModule,
+    ModulesModule,
   ],
   controllers: [AppController, RootController, AuthController],
   providers: [AppService, MongoLoggerProvider],

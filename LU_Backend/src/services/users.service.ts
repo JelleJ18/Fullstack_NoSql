@@ -20,14 +20,20 @@ export class UsersService {
 
   async create(data: { username: string; password: string; email?: string }) {
     const hash = await bcrypt.hash(data.password, 12);
-    return this.userModel.create({
+    const user = await this.userModel.create({
       username: data.username,
       passwordHash: hash,
       email: data.email,
+      role: 'student',
     });
+    return user.toObject();
   }
 
   findByUsername(username: string) {
     return this.userModel.findOne({ username }).exec();
+  }
+
+  findByEmail(email: string) {
+    return this.userModel.findOne({ email }).exec();
   }
 }

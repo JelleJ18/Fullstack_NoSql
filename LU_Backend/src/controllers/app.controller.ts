@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AppService } from '../services/app.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import type { Connection } from 'mongoose';
 
@@ -38,7 +38,6 @@ export class AppController {
   @Get('db-ping')
   async pingDb() {
     try {
-      // Use the native driver via Nest-managed mongoose connection
       const admin = (this.conn as any)?.db?.admin?.();
       if (!admin) {
         return { ok: 0, error: 'No active connection (admin unavailable)' };

@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app.module';
 // Use require-style imports to avoid ESM/CommonJS interop issues at runtime
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const cookieParser = require('cookie-parser');
 import { config } from 'dotenv';
 
 config();
@@ -11,7 +12,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: 'http://localhost:3000',
+    credentials: true,
   });
+  
+  // Parse cookies
+  app.use(cookieParser());
+  
   const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/lu_2';
   const sessionSecret = process.env.SESSION_SECRET ?? 'dev-secret-change-me';
 

@@ -1,38 +1,51 @@
-'use client'; // Zorg dat dit een client component is, zodat je fetch in de browser draait
+'use client'
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import ModuleCard from '@/components/ModuleKaart'
+import { useEffect, useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 
-export default function Page() {
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function Home() {
+  const { user } = useAuth()
+  const [modules, setModules] = useState<any[]>([])  
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/hello')
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.text(); // backend retourneert een plain string
+    const getModules = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/modules`, {
+        credentials: 'include',
       })
-      .then((data) => setMessage(data))
-      .catch((err) => {
-        console.error(err);
-        setError(String(err));
-      })
-      .finally(() => setLoading(false));
-  }, []);
+      const data = await res.json()
+      console.log('Modules:', data)
+      setModules(Array.isArray(data) ? data : []) 
+      setLoading(false)
+    }
+    getModules()
+  }, [])
+
+  if(loading) {
+    return <p>Loading...</p>
+  }
 
   return (
     <div>
-      <h1>React Frontend (Next.js)</h1>
-      <Link href="/register">Account aanmaken</Link>
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p style={{ color: 'red' }}>Error: {error}</p>
-      ) : (
-        <p>Backend says: {message}</p>
-      )}
+      <h1>Welkom bij de de keuzemodule webapp!</h1>
+      {user ? (
+      <p>Je bent ingelogd als: <strong>{user.username}</strong></p>
+    ) : (
+      <p>Je bent niet ingelogd</p>
+    )}
+    
+      <b>Modules</b>
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',  
+      gap: '20px',  
+      padding: '20px',
+    }}>
+      {modules.map((module: any) => (
+        <ModuleCard key={module._id} module={module} />
+      ))}
+    </div>
     </div>
   );
 }
