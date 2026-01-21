@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Req, Get, Res } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
+import { UsersService } from '../../application/users.service';
 import type { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -22,7 +22,7 @@ export class AuthController {
     if (!match) return res.status(401).json({ ok: 0, message: 'Invalid credentials' });
     
     // Generate JWT token
-    const token = jwt.sign({ userId: (user as any)._id }, process.env.JWT_SECRET as string, {
+    const token = jwt.sign({ userId: (user as any)._id, role: (user as any).role }, process.env.JWT_SECRET as string, {
       expiresIn: '7d',
     });
     

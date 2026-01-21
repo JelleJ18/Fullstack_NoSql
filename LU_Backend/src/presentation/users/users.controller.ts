@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { RoleGuard } from 'src/guards/role.guard';
-import { Roles } from 'src/decorators/roles.decorator';
+import { UsersService } from '../../application/users.service';
+import { AuthGuard } from '../../infrastructure/auth/guards/auth.guard';
+import { RoleGuard } from '../../infrastructure/auth/guards/role.guard';
+import { Roles } from '../../decorators/roles.decorator';
 
 @Controller('api/users')
 export class UsersController {

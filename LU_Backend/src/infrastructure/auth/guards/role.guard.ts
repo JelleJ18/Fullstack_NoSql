@@ -14,7 +14,7 @@ export class RoleGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.session?.user;
+    const user = request.user;
 
     if (!user) {
       throw new ForbiddenException('Geen user info in sessie');

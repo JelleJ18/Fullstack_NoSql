@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './modules/app.module';
+import { AppModule } from './presentation/app/app.module';
 // Use require-style imports to avoid ESM/CommonJS interop issues at runtime
 const session = require('express-session');
 const MongoStore = require('connect-mongo');

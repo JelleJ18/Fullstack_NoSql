@@ -2,13 +2,13 @@ import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from '../controllers/app.controller';
-import { AppService } from '../services/app.service';
-import { RootController } from '../root.controller';
-import { MongoLoggerProvider } from '../mongo-logger.provider';
-import { AuthController } from '../controllers/auth.controller';
-import { UsersModule } from './users.module';
-import { ModulesModule } from './modules.module';
+import { AppController } from './app.controller';
+import { AppService } from '../../application/app.service';
+import { RootController } from '../../root.controller';
+import { MongoLoggerProvider } from '../../mongo-logger.provider';
+import { AuthController } from '../auth/auth.controller';
+import { UsersModule } from '../users/users.module';
+import { ModulesModule } from '../modules/modules.module';
 
 // Altijd verbinden: gebruik env of val terug op lokale default
 const mongoModule = MongooseModule.forRootAsync({
