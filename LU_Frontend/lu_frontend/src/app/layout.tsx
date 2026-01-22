@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
+import { DarkModeProvider } from "@/context/DarkModeContext";
+import RootLayoutContent from "./layout-content";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +24,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,13 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-          <footer style={{ borderTop: '1px solid #ccc', padding: '1rem', marginTop: '2rem', textAlign: 'center' }}>
-            © 2025 LU Frontend
-          </footer>
-        </AuthProvider>
+        <DarkModeProvider>
+          <AuthProvider>
+            <RootLayoutContent>{children}</RootLayoutContent>
+          </AuthProvider>
+        </DarkModeProvider>
       </body>
     </html>
   );

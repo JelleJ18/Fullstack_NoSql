@@ -39,45 +39,64 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ maxWidth: '480px', margin: '40px auto', padding: '20px', border: '1px solid #e5e7eb', borderRadius: '8px', background: '#fff' }}>
-      <h1>Profiel</h1>
-      <p style={{ color: '#475569', marginTop: '6px' }}>
-        Bekijk je accountgegevens, ververs de sessie of log uit.
+    <div style={{ maxWidth: '480px', margin: '40px auto', padding: '24px', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'var(--card-background)' }}>
+      <h1 style={{ color: 'var(--foreground)', marginTop: 0 }}>Profiel</h1>
+      <p style={{ color: 'var(--text-secondary)', marginTop: '6px' }}>
+        Bekijk je accountgegevens.
       </p>
 
       <div style={{ marginTop: '16px' }}>
-        <p style={{ margin: '0 0 6px', color: '#64748b' }}>Gebruikersnaam</p>
-        <p style={{ margin: 0, fontWeight: 600 }}>{user?.username || 'Onbekend'}</p>
-      </div>
-
-      <div style={{ marginTop: '12px' }}>
-        <p style={{ margin: '0 0 6px', color: '#64748b' }}>Status</p>
-        <p style={{ margin: 0, fontWeight: 600, color: user ? '#15803d' : '#b91c1c' }}>
-          {user ? 'Ingelogd' : 'Niet ingelogd'}
-        </p>
+        <p style={{ margin: '0 0 6px', color: 'var(--text-muted)' }}>Gebruikersnaam</p>
+        <p style={{ margin: 0, fontWeight: 600, color: 'var(--foreground)' }}>{user?.username || 'Onbekend'}</p>
       </div>
 
       {!user && (
-        <div style={{ marginTop: '14px', padding: '12px', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '6px' }}>
-          <p style={{ margin: '0 0 8px', fontWeight: 600 }}>Niet ingelogd</p>
+        <div style={{ marginTop: '14px', padding: '12px', background: 'var(--warning-bg)', border: '1px solid var(--warning-border)', borderRadius: '6px' }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, color: 'var(--foreground)' }}>Niet ingelogd</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <Link href="/login">Naar login</Link>
-            <Link href="/register">Account aanmaken</Link>
+            <Link href="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Naar login</Link>
+            <Link href="/register" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 500 }}>Account aanmaken</Link>
           </div>
         </div>
       )}
 
       <div style={{ display: 'flex', gap: '10px', marginTop: '20px', flexWrap: 'wrap' }}>
-        <button onClick={handleRefresh} disabled={pending} style={{ padding: '10px 14px' }}>
+        <button 
+          onClick={handleRefresh} 
+          disabled={pending} 
+          style={{ 
+            padding: '10px 14px',
+            backgroundColor: 'var(--border-color)',
+            color: 'var(--foreground)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '6px',
+            cursor: pending ? 'not-allowed' : 'pointer',
+            opacity: pending ? 0.6 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
           {pending ? 'Bezig...' : 'Ververs'}
         </button>
-        <button onClick={handleLogout} disabled={pending} style={{ padding: '10px 14px' }}>
+        <button 
+          onClick={handleLogout} 
+          disabled={pending} 
+          style={{ 
+            padding: '10px 14px',
+            backgroundColor: 'var(--border-color)',
+            color: 'var(--foreground)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '6px',
+            cursor: pending ? 'not-allowed' : 'pointer',
+            opacity: pending ? 0.6 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
           Log uit
         </button>
       </div>
 
       {error && (
-        <p style={{ marginTop: '12px', color: '#b91c1c', fontWeight: 600 }}>
+        <p style={{ marginTop: '12px', color: 'var(--error)', fontWeight: 600 }}>
           {error}
         </p>
       )}
