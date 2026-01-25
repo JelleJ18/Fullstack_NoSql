@@ -29,6 +29,8 @@ async function bootstrap() {
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // require https in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // allow cross-site cookies
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       },
       store: MongoStore.create({ mongoUrl: mongoUri }),
