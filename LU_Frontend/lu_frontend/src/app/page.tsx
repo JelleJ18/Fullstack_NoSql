@@ -14,6 +14,9 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedModule, setSelectedModule] = useState<any>(null)
   const [enrolledModuleIds, setEnrolledModuleIds] = useState<string[]>([])
+  const [filterLevel, setFilterLevel] = useState('')
+  const [filterLocation, setFilterLocation] = useState('')
+  const [filterStudyCredit, setFilterStudyCredit] = useState('')
 
   useEffect(() => {
     const getModules = async () => {
@@ -43,10 +46,15 @@ export default function Home() {
     if (user) getEnrolled()
   }, [user])
 
-  const filteredModules = modules.filter(module =>
-    module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    module.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredModules = modules.filter(module => {
+    const matchesSearch = module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      module.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesLevel = !filterLevel || module.level === filterLevel
+    const matchesLocation = !filterLocation || module.location === filterLocation
+    const matchesStudyCredit = !filterStudyCredit || module.studycredit?.toString() === filterStudyCredit
+    
+    return matchesSearch && matchesLevel && matchesLocation && matchesStudyCredit
+  });
 
   if(loading) {
     return <p>Loading...</p>
@@ -112,6 +120,7 @@ export default function Home() {
             borderRadius: '8px',
             border: '1px solid var(--border-color)',
             transition: 'all 0.2s',
+            marginBottom: '16px',
           }}>
             <Search size={18} color="var(--text-muted)" />
             <input
@@ -128,6 +137,84 @@ export default function Home() {
                 color: 'var(--foreground)',
               }}
             />
+          </div>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '12px',
+          }}>
+            <div>
+              <label style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Niveau</label>
+              <select
+                value={filterLevel}
+                onChange={(e) => setFilterLevel(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: 'var(--foreground)',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">Alle niveaus</option>
+                {Array.from(new Set(modules.map(m => m.level).filter(Boolean))).sort().map(level => (
+                  <option key={level} value={level}>{level}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Locatie</label>
+              <select
+                value={filterLocation}
+                onChange={(e) => setFilterLocation(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: 'var(--foreground)',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">Alle locaties</option>
+                {Array.from(new Set(modules.map(m => m.location).filter(Boolean))).sort().map(location => (
+                  <option key={location} value={location}>{location}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Studiepunten (EC)</label>
+              <select
+                value={filterStudyCredit}
+                onChange={(e) => setFilterStudyCredit(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: 'var(--foreground)',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">Alle studiepunten</option>
+                {Array.from(new Set(modules.map(m => m.studycredit).filter(Boolean))).sort((a, b) => a - b).map(credit => (
+                  <option key={credit} value={credit}>{credit} EC</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
