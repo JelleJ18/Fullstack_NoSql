@@ -11,14 +11,14 @@ config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:3000',
     credentials: true,
   });
   
   // Parse cookies
   app.use(cookieParser());
   
-  const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/lu_2';
+  const mongoUri = process.env.MONGO_URI ?? 'mongodb://127.0.0.1:27017/lu_2';
   const sessionSecret = process.env.SESSION_SECRET ?? 'dev-secret-change-me';
 
   app.use(
@@ -33,6 +33,7 @@ async function bootstrap() {
       store: MongoStore.create({ mongoUrl: mongoUri }),
     }),
   );
-  await app.listen(4000);
+  const port = process.env.PORT ?? 4000;
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();

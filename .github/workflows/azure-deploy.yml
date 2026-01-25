@@ -58,10 +58,19 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
       
+      - name: Package Next.js standalone
+        working-directory: ./LU_Frontend/lu_frontend
+        run: |
+          rm -rf deploy
+          mkdir -p deploy/.next/static
+          cp -r .next/standalone/* deploy/
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public || true
+          cp package.json package-lock.json deploy/
+      
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'lu-frontend-linux'
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: ./LU_Frontend/lu_frontend
-          slot-name: 'production'
+          package: ./LU_Frontend/lu_frontend/deploy
