@@ -26,13 +26,21 @@ jobs:
       - name: Build application
         working-directory: ./LU_Backend
         run: npm run build
+
+      - name: Package backend dist
+        working-directory: ./LU_Backend
+        run: |
+          mkdir -p deploy
+          cp -r dist deploy/dist
+          cp package.json package-lock.json deploy/
+          (cd deploy && zip -r ../backend.zip .)
       
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'lu-backend-linux'
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./LU_Backend
+          package: ./LU_Backend/backend.zip
 
   build-and-deploy-frontend:
     name: Deploy Frontend to Azure
