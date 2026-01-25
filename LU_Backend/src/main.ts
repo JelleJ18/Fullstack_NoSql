@@ -19,6 +19,7 @@ async function bootstrap() {
   app.use(cookieParser());
   
   const mongoUri = process.env.MONGO_URI ?? 'mongodb://127.0.0.1:27017/lu_2';
+  console.log(`[MongoDB] using ${process.env.MONGO_URI ? 'MONGO_URI env' : 'local fallback'} URI`);
   const sessionSecret = process.env.SESSION_SECRET ?? 'dev-secret-change-me';
 
   app.use(
