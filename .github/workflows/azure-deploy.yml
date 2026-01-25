@@ -23,6 +23,9 @@ jobs:
         working-directory: ./LU_Backend
         run: npm ci --omit=dev
       
+      - name: Install NestJS CLI
+        run: npm install -g @nestjs/cli
+      
       - name: Build application
         working-directory: ./LU_Backend
         run: npm run build
