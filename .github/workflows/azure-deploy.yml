@@ -27,12 +27,21 @@ jobs:
         working-directory: ./LU_Backend
         run: npm run build
       
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+      - name: Package backend
+        working-directory: ./LU_Backend
+        run: zip -r ../backend.zip .
+      
+      - name: Login to Azure
+        uses: azure/login@v1
         with:
-          app-name: 'lu-backend'
-          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: ./LU_Backend
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy Backend using CLI
+        run: |
+          az webapp deployment source config-zip \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_BACKEND_APP_NAME }} \
+            --src ./backend.zip
 
   build-and-deploy-frontend:
     name: Deploy Frontend to Azure
@@ -56,10 +65,26 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: Package frontend (Next.js standalone)
+        working-directory: ./LU_Frontend/lu_frontend
+        run: |
+          rm -rf deploy
+          mkdir -p deploy/.next/static
+          cp -r .next/standalone/* deploy/
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public || true
+          cp package.json package-lock.json deploy/
+          (cd deploy && zip -r ../frontend.zip .)
       
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+      - name: Login to Azure
+        uses: azure/login@v1
         with:
-          app-name: 'lu-frontend'
-          publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: ./LU_Frontend/lu_frontend
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy Frontend using CLI
+        run: |
+          az webapp deployment source config-zip \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_FRONTEND_APP_NAME }} \
+            --src ./frontend.zip
