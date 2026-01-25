@@ -14,7 +14,8 @@ import { ModulesModule } from '../modules/modules.module';
 const mongoModule = MongooseModule.forRootAsync({
   inject: [ConfigService],
   useFactory: async (config: ConfigService) => {
-    const envUri = config.get<string>('MONGODB_URI');
+    const envUri =
+      config.get<string>('MONGO_URI') ?? config.get<string>('MONGODB_URI');
     const uri = envUri && envUri.trim().length > 0 ? envUri : 'mongodb://127.0.0.1:27017/lu_2';
     // eslint-disable-next-line no-console
     console.log('[MongoDB] connecting to:', uri);
