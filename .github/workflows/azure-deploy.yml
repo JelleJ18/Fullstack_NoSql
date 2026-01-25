@@ -21,10 +21,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: ./LU_Backend
-        run: npm ci --omit=dev
-      
-      - name: Install NestJS CLI
-        run: npm install -g @nestjs/cli
+        run: npm ci
       
       - name: Build application
         working-directory: ./LU_Backend
@@ -75,10 +72,10 @@ jobs:
           rm -rf deploy
           mkdir -p deploy
           # Copy the standalone server and its dependencies
-          cp -r .next/standalone/* deploy/
+          cp -r .next/standalone/. deploy/
           # Copy static assets into the right place
           mkdir -p deploy/.next/static
-          cp -r .next/static/* deploy/.next/static/
+          cp -r .next/static/. deploy/.next/static/
           # Copy public folder if it exists
           if [ -d "public" ]; then
             cp -r public deploy/
