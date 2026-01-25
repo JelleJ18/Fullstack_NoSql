@@ -21,7 +21,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: ./LU_Backend
-        run: npm ci
+        run: npm ci --omit=dev
       
       - name: Build application
         working-directory: ./LU_Backend
@@ -31,8 +31,9 @@ jobs:
         working-directory: ./LU_Backend
         run: |
           mkdir -p deploy
-          cp -r dist deploy/dist
-          cp package.json package-lock.json deploy/
+          cp -r dist deploy/
+          cp -r node_modules deploy/
+          cp package*.json deploy/
           (cd deploy && zip -r ../backend.zip .)
       
       - name: Deploy to Azure Web App
@@ -69,15 +70,22 @@ jobs:
         working-directory: ./LU_Frontend/lu_frontend
         run: |
           rm -rf deploy
-          mkdir -p deploy/.next/static
+          mkdir -p deploy
+          # Copy the standalone server and its dependencies
           cp -r .next/standalone/* deploy/
-          cp -r .next/static deploy/.next/static
-          cp -r public deploy/public || true
-          cp package.json package-lock.json deploy/
+          # Copy static assets into the right place
+          mkdir -p deploy/.next/static
+          cp -r .next/static/* deploy/.next/static/
+          # Copy public folder if it exists
+          if [ -d "public" ]; then
+            cp -r public deploy/
+          fi
+          # Create the zip file for deployment
+          (cd deploy && zip -r ../frontend.zip .)
       
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'lu-frontend-linux'
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: ./LU_Frontend/lu_frontend/deploy
+          package: ./LU_Frontend/lu_frontend/frontend.zip
