@@ -82,7 +82,7 @@ export default function RegisterForm() {
         </button>
       </form>
       <p>
-        Already have an account? <Link href="/login">Login here</Link>
+        Heb je al een account? <Link href="/login">Log hier in</Link>
       </p>
     </div>
   )

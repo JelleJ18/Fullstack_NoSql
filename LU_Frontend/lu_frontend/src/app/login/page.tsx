@@ -32,7 +32,7 @@ export default function Login() {
         return
       }
 
-      await refreshUser()  // Update global user state!
+      await refreshUser() 
       router.push('/')
     } catch (err) {
       setError('An error occurred. Please try again.')
@@ -72,7 +72,7 @@ export default function Login() {
         </button>
       </form>
       <p>
-        No account? <Link href="/register">Register here</Link>
+        Geen account? <Link href="/register">Registreer hier</Link>
       </p>
     </div>
   )

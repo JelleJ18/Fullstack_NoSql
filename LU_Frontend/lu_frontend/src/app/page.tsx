@@ -1,6 +1,5 @@
 'use client'
 
-import ModuleCard from '@/components/ModuleKaart'
 import Modal from '@/components/Modal'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
@@ -34,7 +33,6 @@ export default function Home() {
           credentials: 'include',
         })
         const data = await res.json()
-        // API returns array of IDs directly, not objects
         const ids = Array.isArray(data) ? data : []
         setEnrolledModuleIds(ids)
       } catch (err) {
@@ -60,20 +58,75 @@ export default function Home() {
     return <p>Loading...</p>
   }
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--surface)' }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '60px 24px 40px',
-      }}>
+    <>
+      <style jsx>{`
+        .page-container {
+          min-height: 100vh;
+          background-color: var(--surface);
+        }
+        .content-wrapper {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 60px 16px 40px;
+        }
+        .page-title {
+          font-size: 24px;
+          font-weight: 700;
+          color: var(--foreground);
+          margin-bottom: 8px;
+          line-height: 1.2;
+        }
+        .search-card {
+          background-color: var(--card-background);
+          border-radius: 12px;
+          padding: 16px;
+          box-shadow: var(--shadow-sm);
+          margin-bottom: 24px;
+          border: 1px solid var(--card-border);
+        }
+        .filters-container {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .modules-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        @media (min-width: 640px) {
+          .modules-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (min-width: 768px) {
+          .content-wrapper {
+            padding: 60px 24px 40px;
+          }
+          .page-title {
+            font-size: 32px;
+          }
+          .search-card {
+            padding: 24px;
+            margin-bottom: 32px;
+          }
+          .filters-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            flex-direction: unset;
+          }
+        }
+        @media (min-width: 1024px) {
+          .modules-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+          }
+        }
+      `}</style>
+      <div className="page-container">
+        <div className="content-wrapper">
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{
-            fontSize: '32px',
-            fontWeight: '700',
-            color: 'var(--foreground)',
-            marginBottom: '8px',
-            lineHeight: '1.2',
-          }}>Welkom bij de Keuzemodule App</h1>
+          <h1 className="page-title">Welkom bij de Keuzemodule App</h1>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -97,14 +150,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{
-          backgroundColor: 'var(--card-background)',
-          borderRadius: '12px',
-          padding: '24px',
-          boxShadow: 'var(--shadow-sm)',
-          marginBottom: '32px',
-          border: '1px solid var(--card-border)',
-        }}>
+        <div className="search-card">
           <h2 style={{
             fontSize: '18px',
             fontWeight: '600',
@@ -139,11 +185,7 @@ export default function Home() {
             />
           </div>
           
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '12px',
-          }}>
+          <div className="filters-container">
             <div>
               <label style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'block' }}>Niveau</label>
               <select
@@ -236,11 +278,7 @@ export default function Home() {
               <p style={{ fontSize: '14px' }}>Probeer een ander zoekterm</p>
             </div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '24px',
-            }}>
+            <div className="modules-grid">
               {filteredModules.map((module: any) => (
                 <div
                   key={module._id}
@@ -274,9 +312,10 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
+        </div>
 
-      <Modal module={selectedModule} isOpen={!!selectedModule} onClose={() => setSelectedModule(null)} />
-    </div>
+        <Modal module={selectedModule} isOpen={!!selectedModule} onClose={() => setSelectedModule(null)} />
+      </div>
+    </>
   );  
 }
