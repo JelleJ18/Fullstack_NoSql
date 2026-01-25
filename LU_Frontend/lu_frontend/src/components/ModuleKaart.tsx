@@ -1,6 +1,22 @@
-import { Star, ArrowRight } from 'lucide-react'
+import { Star, ArrowRight, Check } from 'lucide-react'
+import { useState } from 'react'
 
-export default function ModuleKaart({ module }: { module: any }) {
+export default function ModuleKaart({ module, isEnrolled = false, onEnroll }: { module: any; isEnrolled?: boolean; onEnroll?: (moduleId: string) => void }) {
+  const [loading, setLoading] = useState(false)
+
+  const handleEnroll = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!onEnroll) return
+    
+    setLoading(true)
+    try {
+      await onEnroll(module._id)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div style={{
       backgroundColor: 'var(--card-background)',
@@ -33,7 +49,6 @@ export default function ModuleKaart({ module }: { module: any }) {
           margin: 0,
           flex: 1,
         }}>{module.name}</h3>
-        <Star size={20} color="#fbbf24" fill="#fbbf24" style={{ flexShrink: 0, marginTop: '2px' }} />
       </div>
       <p style={{
         fontSize: '14px',
@@ -55,10 +70,41 @@ export default function ModuleKaart({ module }: { module: any }) {
         color: 'var(--primary)',
         fontSize: '14px',
         fontWeight: '500',
+        marginBottom: '12px'
       }}>
         Details bekijken
         <ArrowRight size={16} />
       </div>
+
+      <button
+        onClick={handleEnroll}
+        disabled={loading || isEnrolled}
+        style={{
+          padding: '10px 16px',
+          backgroundColor: isEnrolled ? 'var(--success)' : 'var(--primary)',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: isEnrolled || loading ? 'not-allowed' : 'pointer',
+          fontWeight: '500',
+          fontSize: '14px',
+          opacity: isEnrolled || loading ? 0.7 : 1,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          justifyContent: 'center',
+          transition: 'all 0.2s'
+        }}
+      >
+        {isEnrolled ? (
+          <>
+            <Check size={16} />
+            Ingeschreven
+          </>
+        ) : (
+          loading ? 'Bezig...' : 'Inschrijven'
+        )}
+      </button>
     </div>
   )
 }

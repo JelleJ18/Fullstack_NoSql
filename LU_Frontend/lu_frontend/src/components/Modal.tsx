@@ -96,30 +96,6 @@ export default function Modal({ module, isOpen, onClose }: { module: any, isOpen
           >
             Sluiten
           </button>
-          <button
-            style={{
-              padding: '10px 24px',
-              fontSize: '14px',
-              fontWeight: '600',
-              color: 'white',
-              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.3)'
-            }}
-          >
-            Inschrijven
-          </button>
         </div>
       </div>
     </div>

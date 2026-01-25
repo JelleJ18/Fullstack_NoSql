@@ -13,6 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedModule, setSelectedModule] = useState<any>(null)
+  const [enrolledModuleIds, setEnrolledModuleIds] = useState<string[]>([])
 
   useEffect(() => {
     const getModules = async () => {
@@ -23,8 +24,24 @@ export default function Home() {
       setModules(Array.isArray(data) ? data : []) 
       setLoading(false)
     }
+    
+    const getEnrolled = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/modules`, {
+          credentials: 'include',
+        })
+        const data = await res.json()
+        // API returns array of IDs directly, not objects
+        const ids = Array.isArray(data) ? data : []
+        setEnrolledModuleIds(ids)
+      } catch (err) {
+        console.log('No enrolled modules yet')
+      }
+    }
+
     getModules()
-  }, [])
+    if (user) getEnrolled()
+  }, [user])
 
   const filteredModules = modules.filter(module =>
     module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,7 +51,6 @@ export default function Home() {
   if(loading) {
     return <p>Loading...</p>
   }
-
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--surface)' }}>
       <div style={{
@@ -144,7 +160,28 @@ export default function Home() {
                   onClick={() => setSelectedModule(module)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <ModuleKaart module={module} />
+                  <ModuleKaart 
+                    module={module} 
+                    isEnrolled={enrolledModuleIds.includes(module._id)}
+                    onEnroll={async (moduleId) => {
+                      try {
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/modules/${moduleId}`, {
+                          method: 'POST',
+                          credentials: 'include',
+                        })
+                        if (res.ok) {
+                          setEnrolledModuleIds([...enrolledModuleIds, moduleId])
+                        } else if (res.status === 400) {
+                          const error = await res.json()
+                          alert(`Inschrijven niet mogelijk: ${error.message || 'Je bent al ingeschreven voor deze module'}`)
+                        } else {
+                          alert('Inschrijven mislukt')
+                        }
+                      } catch (err) {
+                        console.error('Inschrijven mislukt:', err)
+                      }
+                    }}
+                  />
                 </div>
               ))}
             </div>
@@ -154,5 +191,5 @@ export default function Home() {
 
       <Modal module={selectedModule} isOpen={!!selectedModule} onClose={() => setSelectedModule(null)} />
     </div>
-  );
+  );  
 }

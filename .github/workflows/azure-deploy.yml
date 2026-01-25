@@ -85,6 +85,7 @@ jobs:
       
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
+        timeout-minutes: 10
         with:
           app-name: 'lu-frontend-linux'
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
