@@ -73,7 +73,8 @@ export default function RegisterForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-mail (optioneel)"
+            placeholder="E-mail"
+            required
             style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
           />
         </div>
